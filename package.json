@@ -12,7 +12,7 @@
   "engines": {
     "node": ">6.0.0"
   },
-  "author": "richenlin",
+  "author": "chenjp",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.24.1",
