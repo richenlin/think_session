@@ -6,36 +6,30 @@
  * @version    6/8/17
  */
 const lib = require('think_lib');
-const Session = require('./lib/session.js');
+const session = require('./lib/session.js');
 
 module.exports = function (options) {
+    think.app.once('appReady', () => {
+        if (!think._stores) {
+            throw Error('Session middleware was depend with think_cache, please install think_cache middleware!');
+        }
+        options.handel = think._stores || null;
+        think._session = new session(options);
+    });
     return function (ctx, next) {
-        think.app.once('appReady', () => {
-            ctx.session = function(name, value, timeout) {
-                //判断think_cache中间件
-                if (!think.cache.adapter) {
-                    ctx.throw(500, 'please install think_cache middleware');
-                }
-
-                //生成session实例
-                let instance;
-                if (!ctx._sessionKey) {
-                    instance = new Session(options, ctx.cookie);
-                    ctx._sessionKey = instance;
-                } else {
-                    instance = ctx._sessionKey;
-                }
-
-                //调用session方法
-                if (value === undefined) {
-                    return instance.get(name);
-                } else if (value === null) {
-                    return instance.rm(name);
-                } else {
-                    return instance.set(name, value, timeout);
-                }
-            };
-        });
+        ctx.session = function (name, value, timeout) {
+            //调用session方法
+            if (!name) {
+                return think._session.rm(ctx);
+            }
+            if (value === undefined) {
+                return think._session.get(ctx, name);
+            } else if (value === null) {
+                return think._session.rm(ctx, name);
+            } else {
+                return think._session.set(ctx, name, value, timeout);
+            }
+        };
         return next();
     };
 };
