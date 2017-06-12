@@ -1,19 +1,3 @@
-'use strict';
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  *
  * @author     chenjp
@@ -32,7 +16,7 @@ module.exports = class {
             session_key_prefix: 'Session:', //session名称前缀
             session_options: {}, //session对应的cookie选项
             session_sign: '', //session对应的cookie使用签名
-            session_timeout: 24 * 3600 //服务器上session失效时间，单位：秒
+            session_timeout: 24 * 3600, //服务器上session失效时间，单位：秒
         }, options);
     }
 
@@ -45,29 +29,25 @@ module.exports = class {
      * @param {any} timeout 
      * @returns 
      */
-    set(ctx, name, value, timeout) {
-        var _this = this;
-
-        return (0, _asyncToGenerator3.default)(function* () {
-            try {
-                let instance = _this.getInstance(ctx);
-                let content = {
-                    [name]: value,
-                    expire: timeout ? Date.now() + timeout * 1000 : null,
-                    timeout: timeout || -1
-                };
-                let data = yield instance.get(instance.options.session_key);
-                if (!lib.isEmpty(data)) {
-                    data = JSON.parse(data);
-                    data = lib.extend(data, content);
-                } else {
-                    data = content;
-                }
-                return instance.set(instance.options.session_key, (0, _stringify2.default)(data), timeout);
-            } catch (e) {
-                return _promise2.default.resolve();
+    async set(ctx, name, value, timeout) {
+        try {
+            let instance = this.getInstance(ctx);
+            let content = {
+                [name]: value,
+                expire: timeout ? Date.now() + timeout * 1000 : null,
+                timeout: timeout || -1
+            };
+            let data = await instance.get(instance.options.session_key);
+            if (!lib.isEmpty(data)) {
+                data = JSON.parse(data);
+                data = lib.extend(data, content);
+            } else {
+                data = content;
             }
-        })();
+            return instance.set(instance.options.session_key, JSON.stringify(data), timeout);
+        } catch (e) {
+            return Promise.resolve();
+        }
     }
 
     /**
@@ -77,24 +57,20 @@ module.exports = class {
      * @param {any} name 
      * @returns 
      */
-    get(ctx, name) {
-        var _this2 = this;
-
-        return (0, _asyncToGenerator3.default)(function* () {
-            try {
-                let instance = _this2.getInstance(ctx);
-                let data = yield instance.get(instance.options.session_key);
-                data = JSON.parse(data);
-                if (data.expire && Date.now() > data.expire) {
-                    instance.rm(instance.options.session_key);
-                    return '';
-                } else {
-                    return data[name];
-                }
-            } catch (e) {
-                return _promise2.default.resolve();
+    async get(ctx, name) {
+        try {
+            let instance = this.getInstance(ctx);
+            let data = await instance.get(instance.options.session_key);
+            data = JSON.parse(data);
+            if (data.expire && Date.now() > data.expire) {
+                instance.rm(instance.options.session_key);
+                return '';
+            } else {
+                return data[name];
             }
-        })();
+        } catch (e) {
+            return Promise.resolve();
+        }
     }
 
     /**
@@ -112,7 +88,7 @@ module.exports = class {
             let instance = this.getInstance(ctx);
             return instance.rm(instance.options.session_key);
         } catch (e) {
-            return _promise2.default.resolve();
+            return Promise.resolve();
         }
     }
 

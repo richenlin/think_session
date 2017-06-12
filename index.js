@@ -11,7 +11,7 @@ const session = require('./lib/session.js');
 module.exports = function (options) {
     think.app.once('appReady', () => {
         if (!think._stores) {
-            throw Error('Session middleware was depend with think_cache, please install think_cache middleware!');
+            throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
         options.handel = think._stores || null;
         think._session = new session(options);
