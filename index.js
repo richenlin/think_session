@@ -14,10 +14,10 @@ module.exports = function (options) {
             throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
         options.handel = think._stores || null;
-        think._session = new session(options);
+        lib.define(think, '_session', new session(options));
     });
     return function (ctx, next) {
-        ctx.session = function (name, value, timeout) {
+        lib.define(think, 'session', function (name, value, timeout) {
             //调用session方法
             if (!name) {
                 return think._session.rm(ctx);
@@ -29,7 +29,8 @@ module.exports = function (options) {
             } else {
                 return think._session.set(ctx, name, value, timeout);
             }
-        };
+        });
+        
         return next();
     };
 };
