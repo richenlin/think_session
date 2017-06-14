@@ -46,7 +46,7 @@ module.exports = class {
             }
             return instance.set(instance.options.session_key, JSON.stringify(data), timeout);
         } catch (e) {
-            return Promise.resolve();
+            return Promise.reject(e);
         }
     }
 
@@ -61,15 +61,18 @@ module.exports = class {
         try {
             let instance = this.getInstance(ctx);
             let data = await instance.get(instance.options.session_key);
-            data = JSON.parse(data);
-            if (data.expire && Date.now() > data.expire) {
-                instance.rm(instance.options.session_key);
-                return '';
-            } else {
-                return data[name];
+            if (data) {
+                data = JSON.parse(data);
+                if (data.expire && Date.now() > data.expire) {
+                    instance.rm(instance.options.session_key);
+                    return null;
+                } else {
+                    return data[name];
+                }
             }
+            return null;
         } catch (e) {
-            return Promise.resolve();
+            return Promise.reject(e);
         }
     }
 
@@ -88,7 +91,7 @@ module.exports = class {
             let instance = this.getInstance(ctx);
             return instance.rm(instance.options.session_key);
         } catch (e) {
-            return Promise.resolve();
+            return Promise.reject(e);
         }
     }
 
@@ -121,7 +124,7 @@ module.exports = class {
             ctx.cookie(sessionName, cookie, { httponly: true });
         }
 
-        const handle = this.options.handle || think._stores || null;
+        const handle = this.options.handle || null;
         if (!handle) {
             ctx.throw(500, 'Session stores initialize faild.');
         }

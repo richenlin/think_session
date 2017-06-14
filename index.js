@@ -13,7 +13,7 @@ module.exports = function (options) {
         if (!think._caches._stores) {
             throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
-        options.handel = think._caches._stores || null;
+        options.handle = think._caches._stores || null;
         think._caches._session = new session(options);
     });
     return function (ctx, next) {
