@@ -10,24 +10,24 @@ const session = require('./lib/session.js');
 
 module.exports = function (options) {
     think.app.once('appReady', () => {
-        if (!think._stores) {
+        if (!think._caches._stores) {
             throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
-        options.handel = think._stores || null;
-        lib.define(think, '_session', new session(options));
+        options.handel = think._caches._stores || null;
+        think._caches._session = new session(options);
     });
     return function (ctx, next) {
-        lib.define(think, 'session', function (name, value, timeout) {
+        lib.define(ctx, 'session', function (name, value, timeout) {
             //调用session方法
             if (!name) {
-                return think._session.rm(ctx);
+                return think._caches._session.rm(ctx);
             }
             if (value === undefined) {
-                return think._session.get(ctx, name);
+                return think._caches._session.get(ctx, name);
             } else if (value === null) {
-                return think._session.rm(ctx, name);
+                return think._caches._session.rm(ctx, name);
             } else {
-                return think._session.set(ctx, name, value, timeout);
+                return think._caches._session.set(ctx, name, value, timeout);
             }
         });
         
