@@ -14,7 +14,7 @@ module.exports = function (options) {
             throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
         options.handle = think._caches._stores || null;
-        think._caches._session = new session(options);
+        think._caches._session = new session(options, think._caches.configs.middleware.config['cache'] || {});
     });
     return function (ctx, next) {
         lib.define(ctx, 'session', function (name, value, timeout) {
