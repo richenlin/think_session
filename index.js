@@ -39,6 +39,7 @@ module.exports = function (options) {
             } else if (value === null) {
                 return think._caches._session.rm(ctx, name);
             } else {
+                timeout = timeout || options.session_timeout;
                 return think._caches._session.set(ctx, name, value, timeout);
             }
         });
