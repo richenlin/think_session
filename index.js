@@ -22,7 +22,7 @@ const defaultOptions = {
 module.exports = function (options) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
     think.app.once('appReady', () => {
-        if (!think._caches._stores || !think._caches.configs.middleware.config['cache']) {
+        if (!think._caches._stores) {
             throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
         }
         options.handle = think._caches._stores || null;
