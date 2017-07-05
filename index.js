@@ -6,27 +6,47 @@
  * @version    6/8/17
  */
 const lib = require('think_lib');
+const store = require('think_store');
 const session = require('./lib/session.js');
 /**
  * default options
  */
 const defaultOptions = {
-    session_path: '', //file类型下文件存储位置
+    session_type: 'file', //数据缓存类型 file,redis,memcache
     session_name: 'thinkkoa', //session对应的cookie名称
-    session_key_prefix: 'Session:', //session名称前缀
+    session_key_prefix: 'ThinkKoa:', //session名称前缀
     session_options: {}, //session对应的cookie选项
     session_sign: '', //session对应的cookie使用签名
     session_timeout: 24 * 3600, //服务器上session失效时间，单位：秒
+
+    //session_type=file
+    file_suffix: '.json', //File缓存方式下文件后缀名
+    file_path: think.root_path + '/cache',
+
+    //session_type=redis
+    redis_host: '127.0.0.1',
+    redis_port: 6379,
+    redis_password: '',
+    redis_db: '0',
+    redis_timeout: 10, //try connection timeout
+
+    //session_type=memcache
+    memcache_host: '127.0.0.1',
+    memcache_port: 11211,
+    memcache_poolsize: 10, //memcache pool size
+    memcache_timeout: 10, //try connection timeout,
 };
 
 module.exports = function (options) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
     think.app.once('appReady', () => {
-        if (!think._caches._stores) {
-            throw Error('Session middleware was depend with think_cache, please install think_cache middleware! If already installed, please set up the config file to open the middleware');
-        }
-        options.handle = think._caches._stores || null;
-        think._caches._session = new session(options, think._caches.configs.middleware.config['cache'] || {});
+        options.handle = store;
+        options.type = options.session_type || 'file'; //数据缓存类型 file,redis,memcache
+        options.key_prefix = (~((options.session_key_prefix).indexOf(':'))) ? `${options.session_key_prefix}Session:` : `${options.session_key_prefix}:Session:`; //缓存key前缀
+        options.timeout = options.cache_timeout || 6 * 3600; //数据缓存有效期，单位: 秒
+
+        options.handle = store;
+        think._caches._session = new session(options);
     });
     return function (ctx, next) {
         lib.define(ctx, 'session', function (name, value, timeout) {
