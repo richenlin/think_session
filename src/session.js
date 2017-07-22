@@ -121,7 +121,7 @@ module.exports = class {
             if (sessionSign) {
                 cookie = this.cookieSign(cookie, sessionSign);
             }
-            ctx.cookie(sessionName, cookie, { httponly: true });
+            ctx.cookie(sessionName, cookie, { httpOnly: true });
         }
 
         if (!this.options.handle) {
