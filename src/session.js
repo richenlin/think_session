@@ -109,7 +109,7 @@ module.exports = class {
         let sessionName = this.options.session_name;
         let sessionSign = this.options.session_sign;
 
-        let cookie = ctx.cookie(sessionName);
+        let cookie = ctx.cookies.get(sessionName);
         if (cookie && sessionSign) {
             cookie = this.cookieUnsign(cookie, sessionSign);
         }
@@ -121,7 +121,7 @@ module.exports = class {
             if (sessionSign) {
                 cookie = this.cookieSign(cookie, sessionSign);
             }
-            ctx.cookie(sessionName, cookie, { httpOnly: true });
+            ctx.cookies.set(sessionName, cookie, { httpOnly: true });
         }
 
         if (!this.options.handle) {
