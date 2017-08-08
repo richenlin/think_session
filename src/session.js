@@ -14,7 +14,7 @@ module.exports = class {
             session_path: '', //file类型下文件存储位置
             session_name: 'thinkkoa', //session对应的cookie名称
             session_key_prefix: 'Session:', //session名称前缀
-            session_options: {}, //session对应的cookie选项
+            session_options: { httpOnly: true }, //session对应的cookie选项
             session_sign: '', //session对应的cookie使用签名
             session_timeout: 24 * 3600, //服务器上session失效时间，单位：秒
         }, options);
@@ -121,7 +121,7 @@ module.exports = class {
             if (sessionSign) {
                 cookie = this.cookieSign(cookie, sessionSign);
             }
-            ctx.cookies.set(sessionName, cookie, { httpOnly: true });
+            ctx.cookies.set(sessionName, cookie, this.options.session_options);
         }
 
         if (!this.options.handle) {
@@ -130,7 +130,7 @@ module.exports = class {
 
         this.options.session_key = cookie;
         const handle = this.options.handle.getInstance(this.options);
-        
+
         lib.define(ctx, '_session', handle, 1);
         return ctx._session;
     }
