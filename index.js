@@ -21,7 +21,7 @@ const defaultOptions = {
 
     //session_type=file
     file_suffix: '.json', //File缓存方式下文件后缀名
-    file_path: think.root_path + '/cache',
+    file_path: process.env.APP_PATH + '/cache',
 
     //session_type=redis
     redis_host: '127.0.0.1',
@@ -37,30 +37,30 @@ const defaultOptions = {
     memcache_timeout: 10, //try connection timeout,
 };
 
-module.exports = function (options) {
+module.exports = function (options, app) {
     options = options ? lib.extend(defaultOptions, options, true) : defaultOptions;
-    think.app.once('appReady', () => {
+    app.once('appReady', () => {
         options.handle = store;
         options.type = options.session_type || 'file'; //数据缓存类型 file,redis,memcache
         options.key_prefix = (~((options.session_key_prefix).indexOf(':'))) ? `${options.session_key_prefix}Session:` : `${options.session_key_prefix}:Session:`; //缓存key前缀
         options.timeout = options.cache_timeout || 6 * 3600; //数据缓存有效期，单位: 秒
 
         options.handle = store;
-        think._caches._session = new session(options);
+        app._caches._session = new session(options);
     });
     return function (ctx, next) {
         lib.define(ctx, 'session', function (name, value, timeout) {
             //调用session方法
             if (!name) {
-                return think._caches._session.rm(ctx);
+                return app._caches._session.rm(ctx);
             }
             if (value === undefined) {
-                return think._caches._session.get(ctx, name);
+                return app._caches._session.get(ctx, name);
             } else if (value === null) {
-                return think._caches._session.rm(ctx, name);
+                return app._caches._session.rm(ctx, name);
             } else {
                 timeout = timeout || options.session_timeout;
-                return think._caches._session.set(ctx, name, value, timeout);
+                return app._caches._session.set(ctx, name, value, timeout);
             }
         });
 

@@ -1,33 +1,30 @@
 {
   "name": "think_session",
-  "version": "1.1.0",
-  "description": "session for ThinkKoa",
+  "version": "2.0.0",
+  "description": "Session Middleware for ThinkKoa",
   "main": "index.js",
   "scripts": {
     "test": "npm run eslint",
     "test-cov": "istanbul cover ./node_modules/mocha/bin/_mocha -- -t 50000 --recursive  -R spec test/",
-    "compile": "babel src -d lib",
-    "watch-compile": "npm run compile -- --watch",
-    "prepublish": "npm run compile && npm test",
+    "prepublish": "npm test",
     "eslint": "eslint src/"
   },
   "engines": {
-    "node": ">6.0.0"
+    "node": ">8.0.0"
   },
-  "author": "chenjp",
+  "author": "richenlin",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thinkkoa/think_session/issues"
+  },
+  "homepage": "https://github.com/thinkkoa/think_session",
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
-    "eslint": "^3.19.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^3.4.2"
+    "eslint": "^4.4.1",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^3.5.0",
+    "supertest": "^3.0.0"
   },
   "dependencies": {
-    "babel-runtime": "6.23.0",
-    "think_lib": "^1.x.x"
+    "think_lib": "^2.x.x"
   }
 }
