@@ -1,6 +1,6 @@
 {
   "name": "think_session",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Session Middleware for ThinkKoa",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
-    "think_lib": "^2.x.x"
+    "think_lib": "^2.x.x",
+    "think_store": "^2.x.x"
   }
 }
