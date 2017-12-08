@@ -21,7 +21,7 @@ const defaultOptions = {
 
     //session_type=file
     file_suffix: '.json', //File缓存方式下文件后缀名
-    file_path: process.env.APP_PATH + '/cache',
+    file_path: process.env.ROOT_PATH + '/cache',
 
     //session_type=redis
     redis_host: '127.0.0.1',
