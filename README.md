@@ -32,8 +32,8 @@ config: { //中间件配置
         session_options: {}, //session对应的cookie选项
         session_sign: '', //session对应的cookie使用签名
         session_timeout: 24 * 3600, //服务器上session失效时间，单位：秒
-
-        cookie_option: { // session对应的cookie配置
+        // session对应的cookie配置
+        cookie_option: { 
             domain: '',  // cookie所在的域名
             path: '/',       // cookie所在的路径
             // maxAge: -1, // cookie有效时长
