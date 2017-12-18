@@ -15,21 +15,16 @@ npm i think_session
 
 # 使用
 -----
-注意: think\_session 中间件依赖 think\_chache 中间件,在使用此中间件之前,请安装配置cache中间件
 
 1、项目中增加中间件 middleware/session.js
-```
+```js
 module.exports = require('think_session');
 ```
 
 2、项目中间件配置 config/middleware.js:
-```
-list: [..., 'cache', 'session'], //加载的中间件列表
+```js
+list: ['session'], //加载的中间件列表
 config: { //中间件配置
-    ...,
-    cache: {
-        ...
-    },
     session: {
         session_type: 'file', //数据缓存类型 file,redis,memcache
         session_name: 'thinkkoa', //session对应的cookie名称
