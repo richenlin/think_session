@@ -33,6 +33,13 @@ config: { //中间件配置
         session_sign: '', //session对应的cookie使用签名
         session_timeout: 24 * 3600, //服务器上session失效时间，单位：秒
 
+        cookie_option: { // session对应的cookie配置
+            domain: '',  // cookie所在的域名
+            path: '/',       // cookie所在的路径
+            // maxAge: -1, // cookie有效时长
+            httpOnly: true,  // 是否只用于http请求中获取
+        },
+
         //session_type=file
         file_suffix: '.json', //File缓存方式下文件后缀名
         file_path: process.env.APP_PATH + '/cache',
